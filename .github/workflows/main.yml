@@ -1,0 +1,23 @@
+name: Scheduled Auto Commit
+
+on:
+  schedule:
+    - cron: '0 9 * * *' # Runs every day at 09:00 UTC. Change via crontab.guru
+  workflow_dispatch: # Allows you to trigger it manually
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Update Activity Log
+        run: |
+          echo "Last automated check: $(date)" > last_update.txt
+
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: automated daily update"
+          branch: main
