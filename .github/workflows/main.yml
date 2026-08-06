@@ -1,23 +1,27 @@
-name: Scheduled Auto Commit
+name: Automated Update
 
 on:
   schedule:
-    - cron: '0 9 * * *' # Runs every day at 09:00 UTC. Change via crontab.guru
-  workflow_dispatch: # Allows you to trigger it manually
+    - cron: '0 0 * * *' # Example schedule
+  workflow_dispatch:
+
+# Grant write permissions to GITHUB_TOKEN
+permissions:
+  contents: write
 
 jobs:
   auto-commit:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Update Activity Log
-        run: |
-          echo "Last automated check: $(date)" > last_update.txt
+      # ... your build/update steps that create/modify last_update.txt ...
 
-      - name: Commit and Push Changes
+      - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: automated daily update"
           branch: main
+          file_pattern: "."
+          commit_author: "RupamCodes <157722068+RupamCodes@users.noreply.github.com>"
