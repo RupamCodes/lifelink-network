@@ -5,6 +5,9 @@ on:
     - cron: '0 9 * * *' # Runs every day at 09:00 UTC. Change via crontab.guru
   workflow_dispatch: # Allows you to trigger it manually
 
+permissions:
+  contents: write
+
 jobs:
   auto-commit:
     runs-on: ubuntu-latest
