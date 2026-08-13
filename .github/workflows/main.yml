@@ -1,27 +1,30 @@
-name: Automated Update
+name: Auto Commit
 
 on:
-  schedule:
-    - cron: '0 0 * * *' # Example schedule
-  workflow_dispatch:
-
-# Grant write permissions to GITHUB_TOKEN
-permissions:
-  contents: write
+  push:
+    branches: [ main ]
 
 jobs:
   auto-commit:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      # ... your build/update steps that create/modify last_update.txt ...
+      - name: Make Changes
+        run: |
+          echo "Last run: $(date)" > auto-update.txt
 
-      - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore: automated daily update"
-          branch: main
-          file_pattern: "."
-          commit_author: "RupamCodes <157722068+RupamCodes@users.noreply.github.com>"
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          git add .
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "auto: update timestamp file"
+            git push
+          fi
